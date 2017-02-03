@@ -28,83 +28,73 @@
 # either expressed or implied, of the FreeBSD Project.
 
 
-import shputils
-from os.path import dirname
-from struct import unpack
+import os
+from osgeo import gdal, ogr, osr
 
 
 class Tile(object):
-    def __init__(self, min_x, min_y, max_x, max_y, filename):
-        self.min_x = min_x
-        self.min_y = min_y
-        self.max_x = max_x
-        self.max_y = max_y
+    def __init__(self, filename):
         self.filename = filename
+        self.ds = None
 
-    def contains(self, x, y):
-        return self.min_x <= x and self.max_x > x and self.min_y <= y and self.max_y > y
-
-    def __str__(self):
-        return "%f, %f, %f, %f: %s" % (
-            self.min_x, self.min_y, self.max_x, self.max_y, self.filename
-        )
-
-
-class BTTile(Tile):
     def get_value(self, x, y):
-        file = open(self.filename, "rb")
-        if not hasattr(self, "cols"):
-            file.seek(10)
-            (self.cols, self.rows, self.dataSize, self.floatingPoint) = \
-                unpack("<LLhh", file.read(12))
-            self.resolution_x = (self.max_x - self.min_x) / self.cols
-            self.resolution_y = (self.max_y - self.min_y) / self.rows
-
-        pos_x = int((x - self.min_x) / self.resolution_x)
-        pos_y = int((y - self.min_y) / self.resolution_y)
-        file.seek(256 + (pos_y + pos_x * self.rows) * self.dataSize)
-
-        if self.floatingPoint == 1:
-            val = unpack("<f", file.read(self.dataSize))[0]
-        else:
-            if self.dataSize == 2:
-                format = "<h"
-            else:
-                format = "<l"
-            data = file.read(self.dataSize)
-            val = unpack(format, data)[0]
-
-        file.close()
-        return val
+        if self.ds is None:
+            self.ds = gdal.Open(self.filename)
+            if self.ds is None:
+                raise Exception("Could not open %s" % (self.filename))
+            self.gt = self.ds.GetGeoTransform()
+            self.rb = self.ds.GetRasterBand(1)
+        px = int((x - self.gt[0]) / self.gt[1])
+        py = int((y - self.gt[3]) / self.gt[5])
+        val = self.rb.ReadAsArray(px, py, 1, 1)
+        return val[0][0]
 
 
 class GeoRaster:
     def __init__(self, shapefile_name):
-        self.tiles = []
-        shp_records = shputils.load_shapefile(shapefile_name)
-        dir = dirname(shapefile_name)
-        if dir == "":
-            dir = "."
-        for shape in shp_records:
-            filename = shape["dbf_data"]["location"].rstrip()
-            tile_class = None
-            if filename.endswith(".bt"):
-                tile_class = BTTile
-            if not filename.startswith("/"):
-                filename = dir + "/" + filename
-            geo = shape["shp_data"]
-            tile = tile_class(geo["xmin"], geo["ymin"], geo["xmax"], geo["ymax"], filename)
-            self.tiles.append(tile)
+        self.filename = shapefile_name
+        self.folder = os.path.dirname(self.filename)
+        if self.folder == "":
+            self.folder = "."
 
-    def get_value(self, x, y):
-        tile = self._get_tile(x, y)
-        if tile:
-            return tile.get_value(x, y)
-        else:
+        driver = ogr.GetDriverByName("ESRI Shapefile")
+        self.ds = driver.Open(shapefile_name, 0)
+        if self.ds is None:
+            raise Exception("Could not open %s" % (shapefile_name))
+        self.layer = self.ds.GetLayer()
+        self.layerDef = self.layer.GetLayerDefn()
+        self.srs = self.layer.GetSpatialRef()
+
+        self.tiles = {}
+
+    def get_value(self, x, y, srid):
+        px, py = self.transform(x, y, srid)
+        self.layer.SetSpatialFilterRect(px, py, px, py)
+        tile = self._get_tile(px, py)
+        if tile is None:
             return None
+        return tile.get_value(px, py)
+
+    def transform(self, x, y, srid):
+        # if shp index srs is not known, suppose it is the same as viewer
+        if self.srs is None:
+            return (x, y)
+        pt_srs = osr.SpatialReference()
+        pt_srs.ImportFromEPSG(int(srid))
+        transform = osr.CoordinateTransformation(pt_srs, self.srs)
+        point = ogr.CreateGeometryFromWkt("POINT ({} {})".format(x, y))
+        point.Transform(transform)
+        return (point.GetX(), point.GetY())
 
     def _get_tile(self, x, y):
-        for cur in self.tiles:
-            if cur.contains(x, y):
-                return cur
+        self.layer.SetSpatialFilterRect(x, y, x, y)
+        for feature in self.layer:
+            location = feature.GetField("location")
+            filename = location
+            if not filename.startswith("/"):
+                filename = os.path.join(self.folder, filename)
+            if location not in self.tiles:
+                self.tiles[location] = Tile(filename)
+            tile = self.tiles[location]
+            return tile
         return None

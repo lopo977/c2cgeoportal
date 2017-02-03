@@ -41,6 +41,7 @@ class TestRasterViews(TestCase):
 
         request = DummyRequest()
         request.registry.settings = {
+            "srid": 21781,
             "raster": {
                 "dem1": {"file": "c2cgeoportal/tests/data/dem.shp",
                          "round": 0.1},
@@ -63,7 +64,7 @@ class TestRasterViews(TestCase):
         result = raster.raster()
         self.assertAlmostEqual(result["dem1"], Decimal("1168.9"))
         self.assertAlmostEqual(result["dem2"], Decimal("1169"))
-        self.assertAlmostEqual(result["dem3"], Decimal("1168.85998535"))
+        self.assertAlmostEqual(result["dem3"], Decimal("1168.86"))
 
         request.params["layers"] = "dem2"
         result = raster.raster()
@@ -74,6 +75,27 @@ class TestRasterViews(TestCase):
         # test wrong layer name
         request.params["layers"] = "wrong"
         self.assertRaises(HTTPNotFound, raster.raster)
+
+    def test_projection(self):
+        from decimal import Decimal
+        from pyramid.testing import DummyRequest
+        from c2cgeoportal.views.raster import Raster
+
+        request = DummyRequest()
+        request.registry.settings = {
+            "srid": 3857,
+            "raster": {
+                "dem": {"file": "c2cgeoportal/tests/data/dem.shp"}
+            }
+        }
+        raster = Raster(request)
+
+        request.params["layers"] = "dem"
+        request.params["lon"] = "751916"
+        request.params["lat"] = "5957479"
+
+        result = raster.raster()
+        self.assertAlmostEqual(result["dem"], Decimal("1173.34"))
 
     def test_absolute_path(self):
         from c2cgeoportal.lib.raster.georaster import GeoRaster
@@ -91,6 +113,7 @@ class TestRasterViews(TestCase):
 
         request = DummyRequest()
         request.registry.settings = {
+            "srid": 21781,
             "raster": {
                 "dem": {"file": "c2cgeoportal/tests/data/dem.shp", "round": 4},
                 "dem2": {"file": "c2cgeoportal/tests/data/dem.shp", "round": 4}
@@ -114,8 +137,8 @@ class TestRasterViews(TestCase):
         self.assertAlmostEqual(result["profile"][1]["dist"], Decimal("9.2"))
         self.assertAlmostEqual(result["profile"][1]["x"], 548003.0)
         self.assertAlmostEqual(result["profile"][2]["y"], 216003.0)
-        self.assertAlmostEqual(result["profile"][2]["values"]["dem"], 1181)
-        self.assertAlmostEqual(result["profile"][2]["values"]["dem2"], 1181)
+        self.assertAlmostEqual(result["profile"][2]["values"]["dem"], 1180)
+        self.assertAlmostEqual(result["profile"][2]["values"]["dem2"], 1180)
         self.assertAlmostEqual(result["profile"][2]["dist"], Decimal("18.4"))
         self.assertAlmostEqual(result["profile"][2]["x"], 547996.5)
 
@@ -131,7 +154,7 @@ class TestRasterViews(TestCase):
         self.assertAlmostEqual(result["profile"][1]["dist"], Decimal("9.2"))
         self.assertAlmostEqual(result["profile"][1]["x"], 548003.0)
         self.assertAlmostEqual(result["profile"][2]["y"], 216003.0)
-        self.assertAlmostEqual(result["profile"][2]["values"]["dem"], 1181)
+        self.assertAlmostEqual(result["profile"][2]["values"]["dem"], 1180)
         self.assertAlmostEqual(result["profile"][2]["dist"], Decimal("18.4"))
         self.assertAlmostEqual(result["profile"][2]["x"], 547996.5)
 
@@ -173,6 +196,7 @@ class TestRasterViews(TestCase):
 
         request = DummyRequest()
         request.registry.settings = {
+            "srid": 21781,
             "raster": {
                 "dem": {"file": "c2cgeoportal/tests/data/dem.shp", "round": 1},
                 "dem2": {"file": "c2cgeoportal/tests/data/dem.shp", "round": 1},
@@ -188,11 +212,11 @@ class TestRasterViews(TestCase):
         self.assertEqual(response.body, """distance,dem4,dem2,dem,x,y
 0.0,-9999,1166,1166,548009,215990
 9.2,-9999,1181,1181,548003,215996
-18.4,1181,1181,1181,547996,216003""")
+18.4,-9999,1180,1180,547996,216003""")
 
         request.params["layers"] = "dem"
         response = profile.csv()
         self.assertEqual(response.body, """distance,dem,x,y
 0.0,1166,548009,215990
 9.2,1181,548003,215996
-18.4,1181,547996,216003""")
+18.4,1180,547996,216003""")

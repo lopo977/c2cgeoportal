@@ -26,8 +26,6 @@ application config (``vars_<project>.yaml``).  For example:
 but there could be more.
 
 ``file`` provides the path to the shape index that references the raster files.
-The raster files should be in the Binary Terrain (BT/VTP .bt 1.3) format.
-One may use GDAL/OGR to convert data to such a format.
 
 ``round`` specifies how the result values should be rounded.
 For instance '1': round to the unit, '0.01': round to the hundredth, etc.

@@ -155,6 +155,7 @@ c2cgeoportal/locale/en/LC_MESSAGES/c2cgeoportal.po: c2cgeoportal/locale/c2cgeopo
 .build/venv/bin/c2c-cssmin: .build/dev-requirements.timestamp
 
 .build/dev-requirements.timestamp: .build/venv.timestamp dev-requirements.txt
+	.build/venv/bin/pip install pygdal==`gdal-config --version`
 	$(PIP_CMD) $(PIP_INSTALL_ARGS) -r dev-requirements.txt $(PIP_REDIRECT)
 	touch $@
 

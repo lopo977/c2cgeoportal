@@ -48,6 +48,7 @@ class Raster(object):
     def __init__(self, request):
         self.request = request
         self.rasters = self.request.registry.settings["raster"]
+        self.srid = self.request.registry.settings["srid"]
 
     @view_config(route_name="raster", renderer="decimaljson")
     def raster(self):
@@ -85,7 +86,7 @@ class Raster(object):
                 'Bad raster type "%s" for raster layer "%s"'
                 % (layer["type"], ref))  # pragma: no cover
 
-        result = raster.get_value(lon, lat)
+        result = raster.get_value(lon, lat, self.srid)
         if "round" in layer:
             result = self._round(result, layer["round"])
         elif result is not None:
