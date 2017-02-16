@@ -106,7 +106,7 @@ script:
 - ./docker-run make -f travis.mk c2cgeoportal/tests/functional/alembic.ini
 - ./docker-compose-run alembic --config c2cgeoportal/tests/functional/alembic.ini upgrade head
 - ./docker-compose-run alembic --config c2cgeoportal/tests/functional/alembic_static.ini upgrade head
-- ./docker-compose-run nosetests
+- ./docker-compose-run py.test c2cgeoportal/tests
 
 after_success:
 - ./docker-run coveralls

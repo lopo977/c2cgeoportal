@@ -32,7 +32,6 @@ import re
 import transaction
 
 from unittest2 import TestCase
-from nose.plugins.attrib import attr
 
 from sqlalchemy import Column
 from sqlalchemy.types import Integer, Unicode, DateTime
@@ -61,7 +60,6 @@ class TestPoint(Base):
     time = Column(DateTime)
 
 
-@attr(functional=True)
 class TestThemesTimeView(TestCase):
 
     def setUp(self):  # noqa

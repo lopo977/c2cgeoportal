@@ -94,8 +94,6 @@ buildall: build doc tests checks
 .PHONY: doc
 doc: $(BUILD_DIR)/sphinx.timestamp
 
-.PHONY: tests
-tests: nose
 
 .PHONY: checks
 checks: flake8 git-attributes quote
@@ -124,9 +122,9 @@ $(BUILD_DIR)/sphinx.timestamp: $(SPHINX_FILES) $(SPHINX_MAKO_FILES:.mako=)
 	doc/build.sh
 	touch $@
 
-.PHONY: nose
-nose: c2c-egg $(MAKO_FILES:.mako=)
-	nosetests
+.PHONY: tests
+tests: c2c-egg $(MAKO_FILES:.mako=)
+	py.test
 
 .PHONY: flake8
 flake8:

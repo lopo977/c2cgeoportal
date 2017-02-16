@@ -31,7 +31,6 @@
 import transaction
 
 from unittest2 import TestCase
-from nose.plugins.attrib import attr
 
 from pyramid import testing
 
@@ -45,7 +44,6 @@ import logging
 log = logging.getLogger(__name__)
 
 
-@attr(functional=True)
 class TestThemesView(TestCase):
 
     def setUp(self):  # noqa
@@ -317,7 +315,6 @@ class TestThemesView(TestCase):
             }
         )
 
-    @attr(min_levels=True)
     def test_min_levels(self):
         entry = self._create_entry_obj(params={
             "version": "2",

@@ -29,7 +29,6 @@
 
 
 from unittest import TestCase
-from nose.plugins.attrib import attr
 
 from pyramid import testing
 from pyramid.response import Response
@@ -41,7 +40,6 @@ from c2cgeoportal.tests.functional import (  # noqa
 )
 
 
-@attr(functional=True)
 class TestFulltextsearchView(TestCase):
 
     @staticmethod

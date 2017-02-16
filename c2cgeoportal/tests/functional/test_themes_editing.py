@@ -29,7 +29,6 @@
 
 
 from unittest2 import TestCase
-from nose.plugins.attrib import attr
 
 import sqlahelper
 import transaction
@@ -47,7 +46,6 @@ import logging
 log = logging.getLogger(__name__)
 
 
-@attr(functional=True)
 class TestThemeEditing(TestCase):
 
     def setUp(self):  # noqa

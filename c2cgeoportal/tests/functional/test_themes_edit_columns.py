@@ -28,7 +28,6 @@
 # either expressed or implied, of the FreeBSD Project.
 
 
-from nose.plugins.attrib import attr
 from unittest import TestCase
 
 import sqlahelper
@@ -40,7 +39,6 @@ from c2cgeoportal.tests.functional import (  # noqa
 )
 
 
-@attr(functional=True)
 class TestThemesEditColumns(TestCase):
 
     _table_index = 0

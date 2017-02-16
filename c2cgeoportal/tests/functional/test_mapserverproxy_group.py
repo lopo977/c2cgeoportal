@@ -29,7 +29,6 @@
 
 
 from unittest import TestCase
-from nose.plugins.attrib import attr
 
 from geoalchemy2 import WKTElement
 import transaction
@@ -44,7 +43,6 @@ from c2cgeoportal.tests.functional import (  # noqa
 Base = sqlahelper.get_base()
 
 
-@attr(functional=True)
 class TestMapserverproxyViewGroup(TestCase):
 
     @staticmethod

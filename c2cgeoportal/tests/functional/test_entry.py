@@ -29,7 +29,6 @@
 
 
 from unittest2 import TestCase
-from nose.plugins.attrib import attr
 
 import sqlahelper
 import re
@@ -50,7 +49,6 @@ import logging
 log = logging.getLogger(__name__)
 
 
-@attr(functional=True)
 class TestEntryView(TestCase):
 
     def setUp(self):  # noqa

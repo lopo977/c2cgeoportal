@@ -29,7 +29,6 @@
 
 
 from unittest import TestCase
-from nose.plugins.attrib import attr
 
 from StringIO import StringIO
 from xml import sax
@@ -42,7 +41,6 @@ from c2cgeoportal.tests.functional import (  # noqa
 )
 
 
-@attr(functional=True)
 class TestFilterCapabilities(TestCase):
     capabilities_file = "c2cgeoportal/tests/data/tinyows_getcapabilities.xml"
 

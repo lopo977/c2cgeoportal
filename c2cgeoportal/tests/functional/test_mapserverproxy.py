@@ -59,7 +59,6 @@
 
 import hashlib
 from unittest2 import TestCase
-from nose.plugins.attrib import attr
 
 from sqlalchemy import Column, types
 from geoalchemy2 import Geometry, WKTElement
@@ -120,7 +119,6 @@ COLUMN_RESTRICTION_GETFEATURE_REQUEST = (GETFEATURE_REQUEST % {
 }).encode("utf-8")
 
 
-@attr(functional=True)
 class TestMapserverproxyView(TestCase):
 
     def setUp(self):  # noqa

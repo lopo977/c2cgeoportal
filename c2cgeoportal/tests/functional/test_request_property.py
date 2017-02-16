@@ -29,7 +29,6 @@
 
 
 import base64
-from nose.plugins.attrib import attr
 from pyramid import testing
 from unittest import TestCase
 
@@ -40,7 +39,6 @@ from c2cgeoportal.tests.functional import (  # noqa
 )
 
 
-@attr(functional=True)
 class TestRequestProperty(TestCase):
 
     def setUp(self):  # noqa

@@ -28,7 +28,6 @@
 # either expressed or implied, of the FreeBSD Project.
 
 
-from nose.plugins.attrib import attr
 from unittest import TestCase
 
 from c2cgeoportal.tests.functional import (  # noqa
@@ -38,7 +37,6 @@ from c2cgeoportal.tests.functional import (  # noqa
 )
 
 
-@attr(functional=True)
 class TestLayers(TestCase):
 
     _table_index = 0

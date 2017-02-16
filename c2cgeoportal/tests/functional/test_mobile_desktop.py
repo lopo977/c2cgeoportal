@@ -29,7 +29,6 @@
 
 
 from unittest import TestCase
-from nose.plugins.attrib import attr
 
 import transaction
 from pyramid import testing
@@ -42,7 +41,6 @@ from c2cgeoportal.tests.functional import (  # noqa
 )
 
 
-@attr(functional=True)
 class TestMobileDesktop(TestCase):
 
     def setUp(self):  # noqa

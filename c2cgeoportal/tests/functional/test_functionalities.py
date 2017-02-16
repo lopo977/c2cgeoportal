@@ -28,7 +28,6 @@
 # either expressed or implied, of the FreeBSD Project.
 
 
-from nose.plugins.attrib import attr
 from unittest import TestCase
 
 from c2cgeoportal.lib import functionality
@@ -39,7 +38,6 @@ from c2cgeoportal.tests.functional import (  # noqa
 )
 
 
-@attr(functional=True)
 class TestFunctionalities(TestCase):
 
     @staticmethod

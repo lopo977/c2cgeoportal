@@ -29,7 +29,6 @@
 
 
 from unittest2 import TestCase
-from nose.plugins.attrib import attr
 
 from geoalchemy2 import WKTElement
 import transaction
@@ -59,7 +58,6 @@ def _create_dummy_request(username=None):
     return request
 
 
-@attr(functional=True)
 class TestTinyOWSProxyView(TestCase):
     data_base = "c2cgeoportal/tests/data/"
     capabilities_response_file = \
@@ -309,7 +307,6 @@ class TestTinyOWSProxyView(TestCase):
         self.assertRaises(HTTPBadRequest, proxy.proxy)
 
 
-@attr(functional=True)
 class TestTinyOWSProxyViewNoDb(TestCase):
     data_base = "c2cgeoportal/tests/data/"
     capabilities_request_file = \

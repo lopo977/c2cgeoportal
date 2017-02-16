@@ -29,14 +29,12 @@
 
 
 from unittest import TestCase
-from nose.plugins.attrib import attr
 
 from c2cgeoportal.tests.functional import (  # noqa
     tear_down_common as tearDownModule,
     set_up_common as setUpModule)
 
 
-@attr(functional=True)
 class TestReflection(TestCase):
 
     _tables = None
@@ -225,7 +223,6 @@ class TestReflection(TestCase):
         )
 
 
-@attr(functional=True)
 class TestXSDSequenceCallback(TestCase):
 
     _tables = None
