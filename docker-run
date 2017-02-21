@@ -29,6 +29,7 @@ def main():
         "--env=TRAVIS={}".format(os.environ.get("TRAVIS", "")),
         "--env=TRAVIS_BRANCH={}".format(os.environ.get("TRAVIS_BRANCH", "")),
         "--env=TRAVIS_JOB_ID={}".format(os.environ.get("TRAVIS_JOB_ID", "")),
+        "--env=CODACY_PROJECT_TOKEN={}".format(os.environ.get("CODACY_PROJECT_TOKEN", "")),
         "camptocamp/geomapfish_build_dev",
     ])
     docker_cmd.extend(args)
