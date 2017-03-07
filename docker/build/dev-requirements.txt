@@ -33,7 +33,7 @@ js.jquery-markitup==1.1.10.post1
 js.jqueryui==1.10.3  # The version 1.10.3 have an issue with the 'jump to' combobox of the admin interface
 js.jqueryui-selectmenu==0.1
 js.jqueryui-syronex-colorpicker==1.0.0
-js.tinymce==4.2.7
+js.tinymce==4.5.4
 JSTools==0.6
 lingua==4.13
 Mako==1.0.6
